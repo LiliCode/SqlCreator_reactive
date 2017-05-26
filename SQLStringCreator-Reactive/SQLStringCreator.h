@@ -8,23 +8,45 @@
 
 #import <Foundation/Foundation.h>
 
-
-
-
-
 @interface SQLStringCreator : NSObject
 
 
+/**
+ SQL 实例构建
+
+ @return 返回当前对象
+ */
++ (instancetype)sqlCreator;
+
+/**
+ 构建任意的SQL
+
+ @param makeBlock 回调，构建
+ @return 返回SQL字符串
+ */
 + (NSString *)makeSqlString:(void (^)(SQLStringCreator *makeSql))makeBlock;
 
 
 /**
  创建表：tableName：表名称 ifNotExists：如果不存在就创建 columns：列名称和数据类型
  */
-- (SQLStringCreator *(^)(BOOL ifNotExists, NSString *tableName, NSArray *columns))createTable;
+- (SQLStringCreator *(^)(BOOL ifNotExists, NSString *tableName, NSArray *columns))create_table;
+
+/**
+ 删除表：ifExists：如果存在 tableName：表名称
+ */
+- (SQLStringCreator *(^)(BOOL ifExists, NSString *tableName))drop_table;
 
 
+/**
+ 更改表结构
+ */
+- (SQLStringCreator *(^)(NSString *tableName))alter_table;
 
+/**
+ 添加一列：columnName：列名称 dataType：数据类型
+ */
+- (SQLStringCreator *(^)(NSString *columnName, NSString *dataType))add;
 
 
 /**
@@ -75,5 +97,17 @@
  */
 - (SQLStringCreator *(^)())space;
 
+/**
+ 结束响应链
+ */
+- (SQLStringCreator *(^)())end;
+
+/**
+ 获取sql
+ */
+- (NSString *(^)())sql;
 
 @end
+
+
+

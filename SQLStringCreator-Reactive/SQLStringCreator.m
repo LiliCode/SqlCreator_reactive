@@ -15,10 +15,24 @@
 
 @implementation SQLStringCreator
 
+- (instancetype)init
+{
+    if (self = [super init])
+    {
+        self.resultSql = [[NSMutableString alloc] init];
+    }
+    
+    return self;
+}
+
++ (instancetype)sqlCreator
+{
+    return [[[self class] alloc] init];
+}
+
 + (NSString *)makeSqlString:(void (^)(SQLStringCreator *))makeBlock
 {
     SQLStringCreator *sqlC = [[SQLStringCreator alloc] init];
-    sqlC.resultSql = [[NSMutableString alloc] init];
     if (makeBlock)
     {
         makeBlock(sqlC);
@@ -28,16 +42,46 @@
 }
 
 
-- (SQLStringCreator *(^)(BOOL, NSString *, NSArray *))createTable
+- (SQLStringCreator *(^)(BOOL, NSString *, NSArray *))create_table
 {
     return ^SQLStringCreator *(BOOL ifNotExists, NSString *tableName, NSArray *columns) {
         [self.resultSql appendString:@"CREATE TABLE "];
         if (ifNotExists) [self.resultSql appendString:@"IF NOT EXISTS "];
         [self.resultSql appendFormat:@"%@(", tableName];
         
-        
+        [self.resultSql appendString:[columns componentsJoinedByString:@","]];
         
         [self.resultSql appendString:@")"];
+        
+        return self;
+    };
+}
+
+- (SQLStringCreator *(^)(BOOL, NSString *))drop_table
+{
+    return ^SQLStringCreator *(BOOL ifExists, NSString *tableName) {
+        [self.resultSql appendString:@"DROP TABLE "];
+        if (ifExists) [self.resultSql appendString:@"IF EXISTS "];
+        [self.resultSql appendString:tableName];
+        
+        return self;
+    };
+}
+
+
+- (SQLStringCreator *(^)(NSString *))alter_table
+{
+    return ^SQLStringCreator *(NSString *tableName) {
+        [self.resultSql appendFormat:@"ALTER TABLE %@",tableName];
+        
+        return self;
+    };
+}
+
+- (SQLStringCreator *(^)(NSString *, NSString *))add
+{
+    return ^SQLStringCreator *(NSString *column, NSString *type) {
+        [self.resultSql appendFormat:@"ADD %@ %@", column, type];
         
         return self;
     };
@@ -156,6 +200,22 @@
         return self;
     };
 }
+
+- (SQLStringCreator *(^)())end
+{
+    return ^SQLStringCreator *() {
+        [self.resultSql appendString:@";"];
+        return self;
+    };
+}
+
+- (NSString *(^)())sql
+{
+    return ^NSString *() {
+        return [self.resultSql copy];
+    };
+}
+
 
 
 
