@@ -81,7 +81,7 @@
 - (SQLStringCreator *(^)(NSString *, NSString *))add
 {
     return ^SQLStringCreator *(NSString *column, NSString *type) {
-        [self.resultSql appendFormat:@"ADD %@ %@", column, type];
+        [self.resultSql appendFormat:@"ADD COLUMN %@ %@", column, type];
         
         return self;
     };
