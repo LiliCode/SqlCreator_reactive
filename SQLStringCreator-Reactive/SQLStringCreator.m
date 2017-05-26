@@ -99,6 +99,18 @@
     };
 }
 
+- (SQLStringCreator *(^)(NSArray *))select_distinct
+{
+    return ^SQLStringCreator *(NSArray *columns) {
+        NSString *cols = [columns componentsJoinedByString:@","]?:@"*";
+        [self.resultSql appendString:@"SELECT DISTINCT "];
+        [self.resultSql appendString:cols];
+        
+        return self;
+    };
+}
+
+
 - (SQLStringCreator *(^)(NSString *))from
 {
     return ^SQLStringCreator *(NSString *tableName) {

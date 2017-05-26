@@ -14,7 +14,7 @@ int main(int argc, const char * argv[])
     @autoreleasepool
     {
         SQLStringCreator *sql = [SQLStringCreator sqlCreator];
-        NSString *sqlStr = sql.select(@[@"uid", @"name"]).space().from(@"Persons").space().where(@"uid=7").end().sql();
+        NSString *sqlStr = sql.select_distinct(@[@"uid", @"name"]).space().from(@"Persons").space().where(@"uid=1").end().sql();
         NSLog(@"%@", sqlStr);
     }
     

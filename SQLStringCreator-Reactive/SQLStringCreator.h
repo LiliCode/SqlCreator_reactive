@@ -28,7 +28,7 @@
 
 
 /**
- 创建表：tableName：表名称 ifNotExists：如果不存在就创建 columns：列名称和数据类型
+ 创建表：ifNotExists：如果不存在就创建 tableName：表名称 columns：列名称和数据类型
  */
 - (SQLStringCreator *(^)(BOOL ifNotExists, NSString *tableName, NSArray *columns))create_table;
 
@@ -39,7 +39,7 @@
 
 
 /**
- 更改表结构
+ 更改表结构 tableName：表名称
  */
 - (SQLStringCreator *(^)(NSString *tableName))alter_table;
 
@@ -54,13 +54,18 @@
  */
 - (SQLStringCreator *(^)(NSArray *columns))select;
 
+/**
+ 查询-返回唯一不同的值
+ */
+- (SQLStringCreator *(^)(NSArray *columns))select_distinct;
+
 - (SQLStringCreator *(^)(NSString *tableName))from;
 
 - (SQLStringCreator *(^)(NSString *query))where;
 
 
 /**
- 插入一条数据，传入表名称和需要设置的字段
+ 插入一条数据，tableName:表名称 columns:设置的字段
  */
 - (SQLStringCreator *(^)(NSString *tableName, NSArray *columns))insert_into;
 
@@ -76,7 +81,7 @@
 - (SQLStringCreator *(^)(NSString *tableName))update;
 
 /**
- 设置数据,格式 uid=?,name=?
+ 设置数据,格式 uid=?,name=? NSArray *
  */
 - (SQLStringCreator *(^)(NSArray *columns))set;
 
